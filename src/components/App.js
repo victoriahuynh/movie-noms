@@ -1,5 +1,6 @@
 import React, {useEffect, useReducer, useState} from 'react';
 import '../App.css';
+import placeholder from '../placeholder.png';
 import Header from "./Header";
 import Search from "./Search";
 import Container from "react-bootstrap/Container";
@@ -151,7 +152,7 @@ const App = () => {
                             <Card.Header>Movie Preview</Card.Header>
                             {moviePreview !== undefined &&
                                 <Card.Body>
-                                    <Card.Img variant='top' src={moviePreview.Poster} style={{height: '10vw', objectFit:'scale-down'}} />
+                                    <Card.Img variant='top' src={moviePreview.Poster !== "N/A" ? moviePreview.Poster : placeholder} style={{height: '10vw', objectFit:'scale-down'}} />
                                     <Card.Title>{moviePreview.Title}</Card.Title>
                                     <Card.Subtitle className="mb-2 text-muted">{moviePreview.Year}</Card.Subtitle>
                                     <Card.Text>
