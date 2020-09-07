@@ -52,21 +52,21 @@ html {
   width: 50%;
 }
 
-.btn-outline-primary,
-.btn-outline-secondary:hover,
-.btn {
-  color: #6B9080;
-  border-color: #6B9080;
-}
-
 .btn-primary {
   color: #fff;
   background-color: #A4C3B2;
   border-color: #A4C3B2;
 }
 
-.btn-primary:hover {
+.btn-primary:hover,
+.btn-primary:active,
+.btn-primary:focus {
   color: #fff;
   background-color: #CCE3DE;
   border-color: #CCE3DE;
+}
+
+.btn-primary:disabled {
+  background-color: grey;
+  border-color: grey;
 }

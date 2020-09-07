@@ -1,3 +1,7 @@
+## OMDB Movie Nominations
+
+You can view this project in your browser [here](https://movie-noms.netlify.app/).
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts

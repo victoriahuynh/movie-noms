@@ -12,6 +12,7 @@ import CardGroup from "react-bootstrap/CardGroup";
 import Spinner from "react-bootstrap/Spinner";
 import ListGroupItem from "react-bootstrap/ListGroupItem";
 import Button from "react-bootstrap/Button";
+import Alert from 'react-bootstrap/Alert'
 
 const MOVIE_API_URL = "https://www.omdbapi.com/";
 const API_KEY = process.env.REACT_APP_API_KEY;
@@ -21,7 +22,6 @@ const initialState = {
     movies: [],
     errorMessage: null
 };
-
 
 const reducer = (state, action) => {
     switch (action.type) {
@@ -55,6 +55,7 @@ const reducer = (state, action) => {
 const App = () => {
     const [state, dispatch] = useReducer(reducer, initialState);
     const [moviePreview, setMoviePreview] = useState();
+    const [moviePreviewCache, setMoviePreviewCache] = useState([]);
     const [nominations, setNominations] = useState([]);
 
     useEffect(() => {
@@ -93,22 +94,27 @@ const App = () => {
     };
 
     const handleMovie = movie => {
-        fetch(`${MOVIE_API_URL}?apikey=${API_KEY}&t=${movie.Title}`)
-            .then(response => response.json())
-            .then(data => {
-                console.log(data);
-                setMoviePreview( () => data);
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
+        if (moviePreviewCache.some(preview => preview.Title === movie.Title)) {
+            let test = moviePreviewCache.filter(item => item.Title === movie.Title);
+            setMoviePreview(() => test[0]);
+        } else {
+            fetch(`${MOVIE_API_URL}?apikey=${API_KEY}&t=${movie.Title}`)
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    setMoviePreview( () => data);
+                    setMoviePreviewCache(prevState => [movie, ...prevState]);
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+        }
     }
 
     const nominateMovie = movie => {
         if (nominations.indexOf(movie) === -1) {
             setNominations(prevState => [movie, ...prevState]);
         }
-
     }
 
     const removeMovie = loseMovie => {
@@ -126,8 +132,14 @@ const App = () => {
                 </Row>
                 <Row>
                     <Col>
-                        <Search search={search} /></Col>
+                        <Search search={search} />
+                    </Col>
                 </Row>
+                {nominations.length === 5 &&
+                    <Row>
+                        <Alert variant="success" style={{marginLeft: 'auto', marginRight: 'auto', width: '80%'}}>You picked out five nominations! You're finished! Good job!</Alert>
+                    </Row>
+                }
                 <Row>
                     <CardGroup className="movieDisplay">
                         <Card>
@@ -158,7 +170,12 @@ const App = () => {
                                     <Card.Text>
                                         {moviePreview.Plot}
                                     </Card.Text>
-                                    <Button variant="primary" onClick={() => nominateMovie(moviePreview)}>Nominate Movie</Button>
+                                    {nominations.indexOf(moviePreview) === -1 && nominations.length < 5 ?
+                                    <Button variant="primary" onClick={() => nominateMovie(moviePreview)}>Nominate
+                                        Movie</Button>
+                                    :
+                                    <Button variant="primary" disabled>Nominate Movie</Button>
+                                    }
                                 </Card.Body>
                             }
                         </Card>
